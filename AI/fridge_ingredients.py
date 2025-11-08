@@ -160,7 +160,7 @@ def get_ingredients_from_image(image_input):
     if isinstance(image_input, Image.Image):
         image_input = np.array(image_input)
     
-    results = model(image_input, conf=0.51)[0]
+    results = model(image_input, conf=0.21, verbose=False)[0]
     ingredients = set()
 
     for box in results.boxes:
