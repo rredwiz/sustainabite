@@ -18,6 +18,8 @@ export default function SpeakableToggle() {
 				showArrow={true}
 				color="foreground"
 				placement="left"
+				delay={0}
+				closeDelay={0}
 			>
 				<button
 					onClick={toggleSpeakable}

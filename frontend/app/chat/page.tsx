@@ -2,12 +2,14 @@
 import { useState } from "react";
 import { useSpeech } from "@/context/SpeechContext";
 import ImageUploadModal from "@/components/ImageUploadModal";
+import UtensilsModal from "@/components/UtensilsModal";
 import ChatActionBar from "@/components/ChatActionBar";
 import { useImageUpload } from "@/lib/useImageUpload";
 
 export default function Chat() {
 	const [isInputVisible, setIsInputVisible] = useState(false);
 	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [isUtensilsModalOpen, setIsUtensilsModalOpen] = useState(false);
 	const { handleSpeak } = useSpeech();
 
 	const imageUpload = useImageUpload(
@@ -16,8 +18,13 @@ export default function Chat() {
 	);
 
 	const handleImageClick = () => {
-		handleSpeak("Image");
+		handleSpeak("Ingredients");
 		setIsModalOpen(true);
+	};
+
+	const handleUtensilClick = () => {
+		handleSpeak("Utensils");
+		setIsUtensilsModalOpen(true);
 	};
 
 	const handleMessageClick = () => {
@@ -34,8 +41,6 @@ export default function Chat() {
 		imageUpload.resetUpload();
 	};
 	return (
-		// off-white green background color with gradient no teal
-		// less green, more off-white
 		<div className="flex h-screen items-center justify-center font-sans bg-gradient-to-r from-green-50 via-emerald-50 to-teal-50">
 			<main className="flex h-screen w-full max-w-7xl flex-col items-center justify-between py-10 px-6 bg-gradient-to-r from-green-50 via-emerald-50 to-teal-50">
 				<div className="flex flex-col min-h-[75vh] w-full items-center justify-center p-4 rounded-lg shadow-sm border border-gray-300">
@@ -46,6 +51,7 @@ export default function Chat() {
 
 				<ChatActionBar
 					onImageClick={handleImageClick}
+					onUtensilClick={handleUtensilClick}
 					onMessageClick={handleMessageClick}
 					onSendClick={handleSendClick}
 					isInputVisible={isInputVisible}
@@ -68,6 +74,11 @@ export default function Chat() {
 				onRemoveIngredient={imageUpload.removeIngredient}
 				onAddIngredient={imageUpload.addIngredient}
 				onUpload={imageUpload.handleUpload}
+			/>
+
+			<UtensilsModal
+				isOpen={isUtensilsModalOpen}
+				onClose={() => setIsUtensilsModalOpen(false)}
 			/>
 		</div>
 	);

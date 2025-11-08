@@ -6,7 +6,7 @@ interface DetectedIngredient {
 	count: number;
 }
 
-const MAX_INGREDIENTS = 20;
+const MAX_INGREDIENTS = 15;
 
 export function useImageUpload(
 	onSuccess: (count: number) => void,
@@ -74,8 +74,11 @@ export function useImageUpload(
 			if (!response.ok) throw new Error("Upload failed");
 
 			const data: DetectedIngredient = await response.json();
-			const limited = data.ingredients.slice(0, MAX_INGREDIENTS);
-			setDetectedIngredients(limited);
+			setDetectedIngredients((prev) => {
+				const combined = [...prev, ...data.ingredients];
+				const unique = Array.from(new Set(combined));
+				return unique.slice(0, MAX_INGREDIENTS);
+			});
 			onSuccess(data.count);
 		} catch (error) {
 			console.error("Error uploading images:", error);

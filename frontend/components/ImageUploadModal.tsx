@@ -77,6 +77,7 @@ export default function ImageUploadModal({
 			hideCloseButton={true}
 			classNames={{
 				base: "p-4",
+				backdrop: "bg-black/50",
 			}}
 		>
 			<ModalContent className="bg-white rounded-lg border border-gray-300 shadow-sm">
@@ -88,43 +89,56 @@ export default function ImageUploadModal({
 				</ModalHeader>
 				<ModalBody>
 					{/* Drag & Drop Zone */}
-					<div
-						onDragOver={onDragOver}
-						onDragLeave={onDragLeave}
-						onDrop={onDrop}
-						onClick={() => fileInputRef.current?.click()}
-						className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
-							isDragging
-								? "border-blue-500 bg-blue-50"
-								: "border-gray-300 hover:border-gray-400"
-						}`}
-					>
-						<Upload
-							className="mx-auto mb-4 text-gray-400"
-							size={48}
-						/>
-						<p className="text-lg font-medium text-gray-700">
-							Drop images here or click to browse
-						</p>
-						<p className="text-sm text-gray-500 mt-2">
-							Supports: JPG, PNG, GIF, WebP
-						</p>
-						<input
-							ref={fileInputRef}
-							type="file"
-							accept="image/*"
-							multiple
-							onChange={(e) => onFileSelect(e.target.files)}
-							className="hidden"
-						/>
-					</div>
+					{previewUrls.length === 0 && (
+						<div
+							onDragOver={onDragOver}
+							onDragLeave={onDragLeave}
+							onDrop={onDrop}
+							onClick={() => fileInputRef.current?.click()}
+							className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
+								isDragging
+									? "border-blue-500 bg-blue-50"
+									: "border-gray-300 hover:border-gray-400"
+							}`}
+						>
+							<Upload
+								className="mx-auto mb-4 text-gray-400"
+								size={48}
+							/>
+							<p className="text-lg font-medium text-gray-700">
+								Drop images here or click to browse
+							</p>
+							<p className="text-sm text-gray-500 mt-2">
+								Supports: JPG, PNG, GIF, WebP
+							</p>
+						</div>
+					)}
+
+					<input
+						ref={fileInputRef}
+						type="file"
+						accept="image/*"
+						multiple
+						onChange={(e) => onFileSelect(e.target.files)}
+						className="hidden"
+					/>
 
 					{/* Image Previews */}
 					{previewUrls.length > 0 && (
 						<div className="mt-6">
-							<h3 className="text-md text-gray-500 font-medium mb-3">
-								Selected Images ({selectedImages.length})
-							</h3>
+							<div className="flex items-center gap-2 mb-3">
+								<h3 className="text-md text-gray-500 font-medium">
+									Selected Images ({selectedImages.length})
+								</h3>
+								<button
+									onClick={() =>
+										fileInputRef.current?.click()
+									}
+									className="p-1 bg-blue-600 hover:bg-blue-700 text-white rounded-full transition-colors"
+								>
+									<Plus size={16} />
+								</button>
+							</div>
 							<div className="grid grid-cols-2 md:grid-cols-3 gap-4">
 								{previewUrls.map((url, index) => (
 									<div
@@ -157,7 +171,7 @@ export default function ImageUploadModal({
 					{/* Detected Ingredients */}
 					<div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
 						<h3 className="text-lg font-semibold text-green-800 mb-3">
-							Ingredients ({detectedIngredients.length}/20)
+							Ingredients ({detectedIngredients.length}/15)
 						</h3>
 						{detectedIngredients.length > 0 ? (
 							<div className="flex flex-wrap gap-2">
@@ -196,13 +210,13 @@ export default function ImageUploadModal({
 							onChange={(e) => setNewIngredient(e.target.value)}
 							onKeyPress={handleKeyPress}
 							placeholder="Add ingredient..."
-							disabled={detectedIngredients.length >= 20}
-							className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500 disabled:bg-gray-100"
+							disabled={detectedIngredients.length >= 15}
+							className="flex-1 px-3 py-2 border border-gray-300 text-gray-500 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500 disabled:bg-gray-100"
 						/>
 						<button
 							onClick={handleAddIngredient}
-							disabled={detectedIngredients.length >= 20}
-							className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm flex items-center gap-1 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+							disabled={detectedIngredients.length >= 15}
+							className="px-3 py-0 bg-blue-600 hover:bg-blue-700 text-white rounded-full text-sm flex items-center gap-1 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
 						>
 							<Plus size={16} />
 						</button>
