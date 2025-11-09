@@ -1,0 +1,84 @@
+{
+    "Restaurants": [
+      {
+        "name": "Tim Hortons",
+        "location": "180 Wyse Rd, Darthmouth, NS B3A1M9",
+        "rating": 4.5,
+        "count": 0,
+        "Link" : "https://locations.timhortons.ca/en/ns/dartmouth/180-wyse-rd/",
+        "img" : "Pngs/Tims180.png"
+      },
+      {
+        "name": "Coffee Street",
+        "location": "33 Alderney Dr, Dartmouth, NS B2Y2N4",
+        "rating": 3.6,
+        "count": 1,
+        "Link": "https://www.coffeestreet.ca",
+        "img" : "Pngs/CoffeeSt.png"
+      },
+      {
+        "name": "Syriana Market",
+        "location": "3600 Strawberry Hill St, Halifax, NS B3K5A9",
+        "rating": 3.9,
+        "count": 2,
+        "Link" : "https://www.facebook.com/syrianamarket",
+        "img" : "Pngs/Syriana.png"
+      },
+      {
+        "name": "Panda Buffet",
+        "location": "100 Main St, Dartmouth, NS B2W4S8, Canada",
+        "rating": 4.4,
+        "count": 3,
+        "Link" : "https://www.newpandachinesebuffet.com",
+        "img" :"Pngs/pandabuffet.png"
+      },
+      {
+        "name": "White Alley Bubble Tea",
+        "location": "1594 Granville St, Halifax, NS B3J1X1",
+        "rating": 3.9,
+        "count": 4,
+        "Link": "https://www.ubereats.com/ca/store/white-alley-bubble-tea/TwgXHy2NUVKXA65w2RkfVg?diningMode=DELIVERY&pl=JTdCJTIyYWRkcmVzcyUyMiUzQSUyMktpbGxhbSUyMExpYnJhcnklMjBHSVMlMjIlMkMlMjJyZWZlcmVuY2UlMjIlM0ElMjIzZWQxZTM2My1mNWE0LThkMWMtZmQ1MC1jNjZkYjA3NzUwNTAlMjIlMkMlMjJyZWZlcmVuY2VUeXBlJTIyJTNBJTIydWJlcl9wbGFjZXMlMjIlMkMlMjJsYXRpdHVkZSUyMiUzQTQ0LjYzNzEzOTMlMkMlMjJsb25naXR1ZGUlMjIlM0EtNjMuNTkwODc3MSU3RA%3D%3D",
+        "img" : "Pngs/WhiteAllyBubbleTea.png"
+      },
+      {
+        "name": "Jet Sushi",
+        "location": "1577 South Park St, Halifax NS B3J2L2",
+        "rating": 4.4,
+        "count": 5,
+        "Link": "https://www.sushijethalifax.com",
+        "img": "Pngs/JetSushi.png"
+      },
+      {
+        "name": "Soika",
+        "location": "114 Woodlawn Rd unit 127b, Dartmouth, NS B2W2S7, Canada",
+        "rating": 4.7,
+        "count": 6,
+        "Link": "https://soika.ca/en",
+        "img": "Pngs/Soika.png"
+      },
+      {
+        "name": "Circle K",
+        "location": "5450 Inglis St, Halifax, NS B3H1J7, Canada",
+        "rating": 3.6,
+        "count": 7,
+        "Link": "https://www.circlek.com/store-locator/CA/halifax/5450-inglis-street/6002515",
+        "img": "Pngs/CircleK.png"
+      },
+      {
+        "name": "Dojan's European Bakery",
+        "location": "771 Bedford Hwy Unit 10, Bedford, NS B4A1A1",
+        "rating": 4.4,
+        "count": 8,
+        "Link": "http://dejaneuropeanbakery.com",
+        "img":"Pngs/Dojan_sBakery.png"
+      },
+      {
+        "name": "Tim Hortons 1104 Main",
+        "location": "1104 Main Rd, Eastern Passage, NS B3G1M6",
+        "rating": 4.7,
+        "count": 9,
+        "Link": "https://locations.timhortons.ca/en/ns/eastern-passage/1104-main-rd",
+        "img" : "Pngs/TimsMain.png"
+      }
+    ]
+}
