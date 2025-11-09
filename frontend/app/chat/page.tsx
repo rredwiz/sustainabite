@@ -214,19 +214,19 @@ export default function Chat() {
 				<div className="flex flex-col h-[75vh] w-full p-4 rounded-lg shadow-sm border border-gray-300 bg-white overflow-y-auto">
 					<div className="flex flex-col gap-4 w-full pt-2">
 						{isLoadingWelcome ? (
-							<div className="flex items-start gap-2 animate-slide-in-left">
-								<div className="bg-gray-200 rounded-2xl rounded-tl-sm px-4 py-3 max-w-[80%] shadow-sm">
-									<div className="flex gap-1">
+							<div className="flex items-start gap-2 animate-slide-in-left w-full">
+								<div className="bg-gray-200 rounded-2xl rounded-tl-sm px-4 py-3 max-w-[80%] min-w-0 shadow-sm">
+									<div className="flex items-center gap-1 pr-1">
 										<div
-											className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+											className="w-2 h-2 bg-gray-400 rounded-full animate-bounce flex-shrink-0"
 											style={{ animationDelay: "0ms" }}
 										></div>
 										<div
-											className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+											className="w-2 h-2 bg-gray-400 rounded-full animate-bounce flex-shrink-0"
 											style={{ animationDelay: "150ms" }}
 										></div>
 										<div
-											className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+											className="w-2 h-2 bg-gray-400 rounded-full animate-bounce flex-shrink-0"
 											style={{ animationDelay: "300ms" }}
 										></div>
 									</div>
@@ -253,37 +253,37 @@ export default function Chat() {
 									>
 										{/* Message text bubble */}
 										<div
-											className={`flex items-start gap-2 ${
+											className={`flex items-start gap-2 w-full ${
 												msg.isBot
 													? "justify-start"
 													: "justify-end"
 											}`}
 										>
 											<div
-												className={`rounded-2xl px-4 py-3 max-w-[80%] shadow-sm ${
+												className={`rounded-2xl px-4 py-3 max-w-[80%] min-w-0 shadow-sm ${
 													msg.isBot
 														? "bg-gray-200 rounded-tl-sm text-gray-800"
 														: "bg-green-600 rounded-tr-sm text-white"
 												}`}
 											>
 												{isLoadingMessage ? (
-													<div className="flex gap-1">
+													<div className="flex items-center gap-1 pr-1">
 														<div
-															className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+															className="w-2 h-2 bg-gray-400 rounded-full animate-bounce flex-shrink-0"
 															style={{
 																animationDelay:
 																	"0ms",
 															}}
 														></div>
 														<div
-															className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+															className="w-2 h-2 bg-gray-400 rounded-full animate-bounce flex-shrink-0"
 															style={{
 																animationDelay:
 																	"150ms",
 															}}
 														></div>
 														<div
-															className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+															className="w-2 h-2 bg-gray-400 rounded-full animate-bounce flex-shrink-0"
 															style={{
 																animationDelay:
 																	"300ms",
@@ -291,7 +291,15 @@ export default function Chat() {
 														></div>
 													</div>
 												) : (
-													<p className="whitespace-pre-wrap text-sm leading-relaxed">
+													<p
+														className="whitespace-pre-wrap text-sm leading-relaxed break-words"
+														style={{
+															wordBreak:
+																"break-word",
+															overflowWrap:
+																"anywhere",
+														}}
+													>
 														{msg.text}
 													</p>
 												)}
