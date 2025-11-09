@@ -35,7 +35,8 @@ app.add_middleware(
 # Configure Gemini AI
 try:
     print("--- Checking for Gemini API key... ---")
-    GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+    GEMINI_API_KEY = os.environ["GEMINI_API_KEY"]
+    print(f"--- Gemini API key: {GEMINI_API_KEY} ---")
     genai.configure(api_key=GEMINI_API_KEY)
     generation_config = {
         "response_mime_type": "application/json",

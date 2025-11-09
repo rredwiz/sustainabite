@@ -10,6 +10,8 @@ interface ChatActionBarProps {
 	onMessageClick: () => void;
 	onSendClick: () => void;
 	isInputVisible: boolean;
+	message: string;
+	onMessageChange: (value: string) => void;
 }
 
 export default function ChatActionBar({
@@ -18,6 +20,8 @@ export default function ChatActionBar({
 	onMessageClick,
 	onSendClick,
 	isInputVisible,
+	message,
+	onMessageChange,
 }: ChatActionBarProps) {
 	return (
 		<div className="flex items-center justify-center gap-2 bg-white p-4 rounded-full shadow-sm border border-gray-300">
@@ -85,6 +89,8 @@ export default function ChatActionBar({
 				<input
 					type="text"
 					placeholder="Add any specifications..."
+					value={message}
+					onChange={(e) => onMessageChange(e.target.value)}
 					className="text-gray-700 px-4 py-2 rounded-full border border-gray-300 focus:bg-gray-100 w-80 outline-none"
 				/>
 			</div>

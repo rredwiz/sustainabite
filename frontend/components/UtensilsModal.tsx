@@ -7,11 +7,14 @@ import {
 	ModalBody,
 	ModalFooter,
 } from "@heroui/modal";
-import { useState } from "react";
 
 interface UtensilsModalProps {
 	isOpen: boolean;
 	onClose: () => void;
+	selectedUtensils: string[];
+	onUtensilsChange: (utensils: string[]) => void;
+	budget: number;
+	onBudgetChange: (budget: number) => void;
 }
 
 const UTENSILS = [
@@ -19,21 +22,25 @@ const UTENSILS = [
 	["Burners", "Blender", "Oven", "Toaster"],
 ];
 
-export default function UtensilsModal({ isOpen, onClose }: UtensilsModalProps) {
-	const [selectedUtensils, setSelectedUtensils] = useState<string[]>([]);
-	const [budget, setBudget] = useState<number>(0);
-
+export default function UtensilsModal({
+	isOpen,
+	onClose,
+	selectedUtensils,
+	onUtensilsChange,
+	budget,
+	onBudgetChange,
+}: UtensilsModalProps) {
 	const toggleUtensil = (utensil: string) => {
-		setSelectedUtensils((prev) =>
-			prev.includes(utensil)
-				? prev.filter((u) => u !== utensil)
-				: [...prev, utensil]
-		);
+		if (selectedUtensils.includes(utensil)) {
+			onUtensilsChange(selectedUtensils.filter((u) => u !== utensil));
+		} else {
+			onUtensilsChange([...selectedUtensils, utensil]);
+		}
 	};
 
 	const handleBudgetChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const value = parseInt(e.target.value) || 0;
-		setBudget(Math.min(value, 100));
+		const value = parseFloat(e.target.value) || 0;
+		onBudgetChange(Math.min(value, 100));
 	};
 	return (
 		<Modal
@@ -87,6 +94,7 @@ export default function UtensilsModal({ isOpen, onClose }: UtensilsModalProps) {
 								placeholder="0"
 								min="0"
 								max="100"
+								step="0.1"
 								className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-gray-500 text-sm focus:outline-none"
 							/>
 						</div>
