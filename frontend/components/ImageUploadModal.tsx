@@ -71,7 +71,7 @@ export default function ImageUploadModal({
 		<Modal
 			isOpen={isOpen}
 			onClose={onClose}
-			size="3xl"
+			size="2xl"
 			scrollBehavior="inside"
 			placement="center"
 			hideCloseButton={true}
