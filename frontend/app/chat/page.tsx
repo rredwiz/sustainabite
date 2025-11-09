@@ -6,6 +6,8 @@ import UtensilsModal from "@/components/UtensilsModal";
 import ChatActionBar from "@/components/ChatActionBar";
 import RecipeCard from "@/components/RecipeCard";
 import RecipeModal from "@/components/RecipeModal";
+import RestaurantCard from "@/components/RestaurantCard";
+import RestaurantModal from "@/components/RestaurantModal";
 import { useImageUpload } from "@/lib/useImageUpload";
 
 interface Recipe {
@@ -15,6 +17,14 @@ interface Recipe {
 	utensils_used: string[];
 	steps: string[];
 	carbon_score: number;
+}
+
+interface Restaurant {
+	name: string;
+	location: string;
+	rating: number;
+	Link: string;
+	img: string;
 }
 
 interface ChatMessage {
@@ -37,6 +47,8 @@ export default function Chat() {
 	const [isLoadingApi, setIsLoadingApi] = useState(false);
 	const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
 	const [isRecipeModalOpen, setIsRecipeModalOpen] = useState(false);
+	const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
+	const [isRestaurantModalOpen, setIsRestaurantModalOpen] = useState(false);
 	const chatEndRef = useRef<HTMLDivElement>(null);
 	const { handleSpeak } = useSpeech();
 
@@ -179,6 +191,20 @@ export default function Chat() {
 				}
 				return filtered;
 			});
+
+			// Fetch random restaurant for the 4th card slot
+			try {
+				const restaurantResponse = await fetch(
+					"http://localhost:8000/api/restaurant"
+				);
+				if (restaurantResponse.ok) {
+					const restaurantData = await restaurantResponse.json();
+					setRestaurant(restaurantData);
+					console.log("Restaurant loaded:", restaurantData.name);
+				}
+			} catch (error) {
+				console.error("Error fetching restaurant:", error);
+			}
 		} catch (error) {
 			console.error("=== Error Making API Call ===");
 			console.error("Error:", error);
@@ -326,13 +352,21 @@ export default function Chat() {
 															/>
 														)
 													)}
-													{/* Empty placeholder for 4th card if only 3 recipes */}
+													{/* Restaurant card in 4th slot */}
 													{msg.recipes!.length ===
-														3 && (
-														<div className="w-full h-full p-4 bg-gray-50 border border-gray-100 rounded-lg opacity-0 pointer-events-none">
-															{/* Empty placeholder */}
-														</div>
-													)}
+														3 &&
+														restaurant && (
+															<RestaurantCard
+																restaurant={
+																	restaurant
+																}
+																onClick={() => {
+																	setIsRestaurantModalOpen(
+																		true
+																	);
+																}}
+															/>
+														)}
 												</div>
 											</div>
 										)}
@@ -390,6 +424,14 @@ export default function Chat() {
 					setSelectedRecipe(null);
 				}}
 				recipe={selectedRecipe}
+			/>
+
+			<RestaurantModal
+				isOpen={isRestaurantModalOpen}
+				onClose={() => {
+					setIsRestaurantModalOpen(false);
+				}}
+				restaurant={restaurant}
 			/>
 		</div>
 	);

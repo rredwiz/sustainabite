@@ -2,6 +2,7 @@ print("--- Sustainabite API Starting ---")
 
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from typing import List
 from pydantic import BaseModel
 from PIL import Image
@@ -9,6 +10,7 @@ import io
 import json
 import sys
 import os
+import random
 import google.generativeai as genai
 from fridge_ingredients import get_ingredients_from_image
 from dotenv import load_dotenv
@@ -30,6 +32,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Serve static files (restaurant images)
+app.mount("/static", StaticFiles(directory="."), name="static")
 
 
 # Configure Gemini AI
@@ -250,6 +255,31 @@ def health_check():
         "model": "gemini-2.5-flash" if gemini_model else "not_configured",
         "gemini_available": gemini_model is not None
     }
+
+
+# Get random restaurant
+@app.get("/api/restaurant")
+async def get_random_restaurant():
+    """Get a random restaurant from localRestaurants.json"""
+    try:
+        with open("localRestaurants.json", "r", encoding="utf-8") as f:
+            data = json.load(f)
+            restaurants = data.get("Restaurants", [])
+            if not restaurants:
+                raise HTTPException(status_code=404, detail="No restaurants found")
+            
+            # Select random restaurant
+            restaurant = random.choice(restaurants)
+            
+            # Update image path to be accessible via static files
+            if restaurant.get("img"):
+                restaurant["img"] = f"http://localhost:8000/static/{restaurant['img']}"
+            
+            return restaurant
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="Restaurants file not found")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error loading restaurant: {str(e)}")
 
 
 # Get recipes from Gemini AI
