@@ -4,13 +4,25 @@ import { useSpeech } from "@/context/SpeechContext";
 import ImageUploadModal from "@/components/ImageUploadModal";
 import UtensilsModal from "@/components/UtensilsModal";
 import ChatActionBar from "@/components/ChatActionBar";
+import RecipeCard from "@/components/RecipeCard";
+import RecipeModal from "@/components/RecipeModal";
 import { useImageUpload } from "@/lib/useImageUpload";
+
+interface Recipe {
+	name: string;
+	ingredients: string[];
+	cooking_time: string;
+	utensils_used: string[];
+	steps: string[];
+	carbon_score: number;
+}
 
 interface ChatMessage {
 	id: string;
 	text: string;
 	isBot: boolean;
 	timestamp: Date;
+	recipes?: Recipe[];
 }
 
 export default function Chat() {
@@ -23,6 +35,8 @@ export default function Chat() {
 	const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
 	const [isLoadingWelcome, setIsLoadingWelcome] = useState(true);
 	const [isLoadingApi, setIsLoadingApi] = useState(false);
+	const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
+	const [isRecipeModalOpen, setIsRecipeModalOpen] = useState(false);
 	const chatEndRef = useRef<HTMLDivElement>(null);
 	const { handleSpeak } = useSpeech();
 
@@ -152,26 +166,14 @@ export default function Chat() {
 					(msg) => msg.id !== loadingMessageId
 				);
 				if (data.Title && data.recipes) {
-					const recipeText = `${data.Title}\n\n${data.recipes
-						.map(
-							(recipe: any, index: number) =>
-								`${index + 1}. ${recipe.name}\n   ⏱️ ${
-									recipe.cooking_time
-								} | 🌱 Carbon Score: ${recipe.carbon_score.toFixed(
-									2
-								)}\n   Ingredients: ${recipe.ingredients.join(
-									", "
-								)}`
-						)
-						.join("\n\n")}`;
-
 					return [
 						...filtered,
 						{
 							id: `recipe-${Date.now()}`,
-							text: recipeText,
+							text: data.Title,
 							isBot: true,
 							timestamp: new Date(),
+							recipes: data.recipes,
 						},
 					];
 				}
@@ -236,52 +238,96 @@ export default function Chat() {
 								const isLoadingMessage =
 									msg.isBot && msg.text === "";
 
+								// Check if message has recipes
+								const hasRecipes =
+									msg.recipes && msg.recipes.length > 0;
+
 								return (
 									<div
 										key={msg.id}
-										className={`flex items-start gap-2 animate-slide-in-left ${
+										className={`flex flex-col gap-3 animate-slide-in-left ${
 											msg.isBot
-												? "justify-start"
-												: "justify-end"
+												? "items-start"
+												: "items-end"
 										}`}
 									>
+										{/* Message text bubble */}
 										<div
-											className={`rounded-2xl px-4 py-3 max-w-[80%] shadow-sm ${
+											className={`flex items-start gap-2 ${
 												msg.isBot
-													? "bg-gray-200 rounded-tl-sm text-gray-800"
-													: "bg-green-600 rounded-tr-sm text-white"
+													? "justify-start"
+													: "justify-end"
 											}`}
 										>
-											{isLoadingMessage ? (
-												<div className="flex gap-1">
-													<div
-														className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
-														style={{
-															animationDelay:
-																"0ms",
-														}}
-													></div>
-													<div
-														className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
-														style={{
-															animationDelay:
-																"150ms",
-														}}
-													></div>
-													<div
-														className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
-														style={{
-															animationDelay:
-																"300ms",
-														}}
-													></div>
-												</div>
-											) : (
-												<p className="whitespace-pre-wrap text-sm leading-relaxed">
-													{msg.text}
-												</p>
-											)}
+											<div
+												className={`rounded-2xl px-4 py-3 max-w-[80%] shadow-sm ${
+													msg.isBot
+														? "bg-gray-200 rounded-tl-sm text-gray-800"
+														: "bg-green-600 rounded-tr-sm text-white"
+												}`}
+											>
+												{isLoadingMessage ? (
+													<div className="flex gap-1">
+														<div
+															className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+															style={{
+																animationDelay:
+																	"0ms",
+															}}
+														></div>
+														<div
+															className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+															style={{
+																animationDelay:
+																	"150ms",
+															}}
+														></div>
+														<div
+															className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+															style={{
+																animationDelay:
+																	"300ms",
+															}}
+														></div>
+													</div>
+												) : (
+													<p className="whitespace-pre-wrap text-sm leading-relaxed">
+														{msg.text}
+													</p>
+												)}
+											</div>
 										</div>
+
+										{/* Recipe cards in 2x2 grid */}
+										{hasRecipes && (
+											<div className="w-full max-w-[80%]">
+												<div className="grid grid-cols-2 gap-4">
+													{msg.recipes!.map(
+														(recipe, index) => (
+															<RecipeCard
+																key={index}
+																recipe={recipe}
+																onClick={() => {
+																	setSelectedRecipe(
+																		recipe
+																	);
+																	setIsRecipeModalOpen(
+																		true
+																	);
+																}}
+															/>
+														)
+													)}
+													{/* Empty placeholder for 4th card if only 3 recipes */}
+													{msg.recipes!.length ===
+														3 && (
+														<div className="w-full h-full p-4 bg-gray-50 border border-gray-100 rounded-lg opacity-0 pointer-events-none">
+															{/* Empty placeholder */}
+														</div>
+													)}
+												</div>
+											</div>
+										)}
 									</div>
 								);
 							})
@@ -327,6 +373,15 @@ export default function Chat() {
 				onUtensilsChange={setSelectedUtensils}
 				budget={budget}
 				onBudgetChange={setBudget}
+			/>
+
+			<RecipeModal
+				isOpen={isRecipeModalOpen}
+				onClose={() => {
+					setIsRecipeModalOpen(false);
+					setSelectedRecipe(null);
+				}}
+				recipe={selectedRecipe}
 			/>
 		</div>
 	);
