@@ -33,7 +33,7 @@ export default function UtensilsModal({ isOpen, onClose }: UtensilsModalProps) {
 
 	const handleBudgetChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const value = parseInt(e.target.value) || 0;
-		setBudget(value);
+		setBudget(Math.min(value, 100));
 	};
 	return (
 		<Modal
@@ -86,7 +86,8 @@ export default function UtensilsModal({ isOpen, onClose }: UtensilsModalProps) {
 								onChange={handleBudgetChange}
 								placeholder="0"
 								min="0"
-								className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-gray-500 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+								max="100"
+								className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-gray-500 text-sm focus:outline-none"
 							/>
 						</div>
 					</div>

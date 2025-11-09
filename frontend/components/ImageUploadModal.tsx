@@ -215,7 +215,7 @@ export default function ImageUploadModal({
 							onKeyPress={handleKeyPress}
 							placeholder="Add ingredient..."
 							disabled={detectedIngredients.length >= 15}
-							className="flex-1 px-3 py-2 border border-gray-300 text-gray-500 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500 disabled:bg-gray-100"
+							className="flex-1 px-3 py-2 border border-gray-300 text-gray-500 rounded-lg text-sm focus:outline-none disabled:bg-gray-100"
 						/>
 						<button
 							onClick={handleAddIngredient}
