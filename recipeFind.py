@@ -9,13 +9,13 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import List
 
-# --- 1. SETUP ---
+# setup
 app = FastAPI(
     title="Recipe API (Gemini Edition)",
     description="Finds and ranks recipes by preference and carbon footprint."
 )
 
-# --- 2. LOAD GEMINI API KEY (MOVED TO THE TOP) ---
+# --  LOAD GEMINI API KEY --
 try:
     print("--- Checking for API key... ---")
     GEMINI_API_KEY = os.environ["GEMINI_API_KEY"]
@@ -29,7 +29,7 @@ except Exception as e:
     print(f"[FATAL ERROR] An unknown error occurred with the API key: {e}")
     sys.exit(1)
 
-# --- 3. CONFIGURE GEMINI MODEL ---
+# ---  CONFIGURE GEMINI MODEL ---
 print("--- Configuring Gemini model... ---")
 generation_config = {
     "response_mime_type": "application/json",
@@ -39,7 +39,7 @@ gemini_model = genai.GenerativeModel(
     generation_config=generation_config
 )
 
-# --- 4. PYDANTIC MODELS ---
+# --- PYDANTIC MODELS ---
 class RecipeRequest(BaseModel):
     available_ingredients: List[str]
     available_utensils: List[str]
@@ -52,7 +52,7 @@ class RecipeResponse(BaseModel):
     preference_score: float # 0.0 (low) to 1.0 (high match)
     carbon_score: float     # 0.0 (low) to 1.0 (high footprint)
 
-# --- 5. THE "MASTER PROMPT" ---
+# ---  THE "MASTER PROMPT" ---
 def create_master_prompt(request: RecipeRequest) -> str:
     
     ingredients_str = ", ".join(request.available_ingredients)
@@ -94,7 +94,7 @@ def create_master_prompt(request: RecipeRequest) -> str:
     - "carbon_score": The float (0.0-1.0) you generated.
     """
 
-# --- 6. API ENDPOINTS ---
+# ---  API ENDPOINTS ---
 
 @app.get("/health")
 def health_check_endpoint():
@@ -122,7 +122,8 @@ async def get_recipes_endpoint(request: RecipeRequest):
         print(f"[ERROR] An error occurred with the Gemini API: {e}")
         raise HTTPException(status_code=500, detail=f"Gemini API error: {str(e)}")
 
-# --- 7. RUN THE SERVER ---
+# --- RUN THE SERVER ---
 if __name__ == "__main__":
     print("--- Starting FastAPI server... ---")
+
     uvicorn.run(app, host="127.0.0.1", port=8000)
