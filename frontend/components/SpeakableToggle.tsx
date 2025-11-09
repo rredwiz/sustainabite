@@ -26,7 +26,7 @@ export default function SpeakableToggle() {
 					className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ease-in-out transform hover:scale-110 active:scale-95 ${
 						isSpeakable
 							? "bg-green-600 hover:bg-green-700"
-							: "bg-red-600 hover:bg-red-700"
+							: "bg-gray-600 hover:bg-gray-700"
 					}`}
 					aria-label={isSpeakable ? "Disable audio" : "Enable audio"}
 				>

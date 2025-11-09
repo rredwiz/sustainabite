@@ -119,7 +119,11 @@ export default function ImageUploadModal({
 						type="file"
 						accept="image/*"
 						multiple
-						onChange={(e) => onFileSelect(e.target.files)}
+						onChange={(e) => {
+							onFileSelect(e.target.files);
+							// reset the input value to allow for multiple uploads
+							e.target.value = "";
+						}}
 						className="hidden"
 					/>
 
@@ -259,9 +263,9 @@ export default function ImageUploadModal({
 					</button>
 					<button
 						onClick={onClose}
-						className="px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+						className="px-6 py-2 bg-white hover:bg-blue-50 text-blue-500 rounded-lg transition-colors"
 					>
-						Close
+						Save
 					</button>
 				</ModalFooter>
 			</ModalContent>

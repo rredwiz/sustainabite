@@ -1,6 +1,6 @@
 "use client";
 
-import { MessageCircle, Send, UtensilsIcon } from "lucide-react";
+import { Ellipsis, MessageCircle, Send } from "lucide-react";
 import { Carrot } from "lucide-react";
 import { Tooltip } from "@heroui/tooltip";
 
@@ -34,7 +34,7 @@ export default function ChatActionBar({
 			>
 				<button
 					onClick={onImageClick}
-					className="rounded-full bg-gray-200 hover:bg-blue-600 p-3 text-black hover:text-white transition-colors"
+					className="rounded-full bg-gray-200 hover:bg-blue-600 p-3 text-black hover:text-white transition-colors flex items-center justify-center"
 				>
 					<Carrot size={20} />
 				</button>
@@ -42,7 +42,7 @@ export default function ChatActionBar({
 			<Tooltip
 				content={
 					<div className="flex bg-black/50 text-white px-2 py-1 rounded-full items-center gap-2">
-						Utensils
+						Options
 					</div>
 				}
 				showArrow={true}
@@ -52,9 +52,9 @@ export default function ChatActionBar({
 			>
 				<button
 					onClick={onUtensilClick}
-					className="rounded-full bg-gray-200 hover:bg-blue-600 p-3 text-black hover:text-white transition-colors"
+					className="rounded-full bg-gray-200 hover:bg-blue-600 p-3 text-black hover:text-white transition-colors flex items-center justify-center"
 				>
-					<UtensilsIcon size={20} />
+					<Ellipsis size={20} />
 				</button>
 			</Tooltip>
 			<Tooltip
@@ -70,7 +70,7 @@ export default function ChatActionBar({
 			>
 				<button
 					onClick={onMessageClick}
-					className="rounded-full bg-gray-200 hover:bg-blue-600 p-3 text-black hover:text-white transition-colors"
+					className="rounded-full bg-gray-200 hover:bg-blue-600 p-3 text-black hover:text-white transition-colors flex items-center justify-center"
 				>
 					<MessageCircle size={20} />
 				</button>
@@ -101,7 +101,7 @@ export default function ChatActionBar({
 			>
 				<button
 					onClick={onSendClick}
-					className="rounded-full bg-green-600 hover:bg-green-700 p-3 text-white transition-colors"
+					className="rounded-full bg-green-600 hover:bg-green-700 p-3 text-white transition-colors flex items-center justify-center"
 				>
 					<Send size={20} />
 				</button>

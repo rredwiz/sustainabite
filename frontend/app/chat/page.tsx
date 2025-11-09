@@ -23,7 +23,7 @@ export default function Chat() {
 	};
 
 	const handleUtensilClick = () => {
-		handleSpeak("Utensils");
+		handleSpeak("Options");
 		setIsUtensilsModalOpen(true);
 	};
 

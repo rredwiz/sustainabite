@@ -107,7 +107,6 @@ export function useImageUpload(
 		previewUrls.forEach((url) => URL.revokeObjectURL(url));
 		setSelectedImages([]);
 		setPreviewUrls([]);
-		setDetectedIngredients([]);
 	};
 
 	return {
