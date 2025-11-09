@@ -12,6 +12,7 @@ interface ChatActionBarProps {
 	isInputVisible: boolean;
 	message: string;
 	onMessageChange: (value: string) => void;
+	isDisabled?: boolean;
 }
 
 export default function ChatActionBar({
@@ -22,9 +23,14 @@ export default function ChatActionBar({
 	isInputVisible,
 	message,
 	onMessageChange,
+	isDisabled = false,
 }: ChatActionBarProps) {
 	return (
-		<div className="flex items-center justify-center gap-2 bg-white p-4 rounded-full shadow-sm border border-gray-300">
+		<div
+			className={`flex items-center justify-center gap-2 bg-white p-4 rounded-full shadow-sm border border-gray-300 ${
+				isDisabled ? "opacity-50 pointer-events-none" : ""
+			}`}
+		>
 			<Tooltip
 				content={
 					<div className="flex bg-black/50 text-white px-2 py-1 rounded-full items-center gap-2">
@@ -38,7 +44,8 @@ export default function ChatActionBar({
 			>
 				<button
 					onClick={onImageClick}
-					className="rounded-full bg-gray-200 hover:bg-blue-600 p-3 text-black hover:text-white transition-colors flex items-center justify-center"
+					disabled={isDisabled}
+					className="rounded-full bg-gray-200 hover:bg-blue-600 p-3 text-black hover:text-white transition-colors flex items-center justify-center disabled:cursor-not-allowed disabled:opacity-50"
 				>
 					<Carrot size={20} />
 				</button>
@@ -56,7 +63,8 @@ export default function ChatActionBar({
 			>
 				<button
 					onClick={onUtensilClick}
-					className="rounded-full bg-gray-200 hover:bg-blue-600 p-3 text-black hover:text-white transition-colors flex items-center justify-center"
+					disabled={isDisabled}
+					className="rounded-full bg-gray-200 hover:bg-blue-600 p-3 text-black hover:text-white transition-colors flex items-center justify-center disabled:cursor-not-allowed disabled:opacity-50"
 				>
 					<Ellipsis size={20} />
 				</button>
@@ -74,7 +82,8 @@ export default function ChatActionBar({
 			>
 				<button
 					onClick={onMessageClick}
-					className="rounded-full bg-gray-200 hover:bg-blue-600 p-3 text-black hover:text-white transition-colors flex items-center justify-center"
+					disabled={isDisabled}
+					className="rounded-full bg-gray-200 hover:bg-blue-600 p-3 text-black hover:text-white transition-colors flex items-center justify-center disabled:cursor-not-allowed disabled:opacity-50"
 				>
 					<MessageCircle size={20} />
 				</button>
@@ -91,7 +100,8 @@ export default function ChatActionBar({
 					placeholder="Add any specifications..."
 					value={message}
 					onChange={(e) => onMessageChange(e.target.value)}
-					className="text-gray-700 px-4 py-2 rounded-full border border-gray-300 focus:bg-gray-100 w-80 outline-none"
+					disabled={isDisabled}
+					className="text-gray-700 px-4 py-2 rounded-full border border-gray-300 focus:bg-gray-100 w-80 outline-none disabled:cursor-not-allowed disabled:opacity-50"
 				/>
 			</div>
 			<Tooltip
@@ -107,7 +117,8 @@ export default function ChatActionBar({
 			>
 				<button
 					onClick={onSendClick}
-					className="rounded-full bg-green-600 hover:bg-green-700 p-3 text-white transition-colors flex items-center justify-center"
+					disabled={isDisabled}
+					className="rounded-full bg-green-600 hover:bg-green-700 p-3 text-white transition-colors flex items-center justify-center disabled:cursor-not-allowed disabled:opacity-50"
 				>
 					<Send size={20} />
 				</button>

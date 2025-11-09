@@ -22,6 +22,7 @@ export default function Chat() {
 	const [message, setMessage] = useState<string>("");
 	const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
 	const [isLoadingWelcome, setIsLoadingWelcome] = useState(true);
+	const [isLoadingApi, setIsLoadingApi] = useState(false);
 	const chatEndRef = useRef<HTMLDivElement>(null);
 	const { handleSpeak } = useSpeech();
 
@@ -70,11 +71,41 @@ export default function Chat() {
 	const handleSendClick = async () => {
 		handleSpeak("Send");
 
+		// Get the user's message before clearing
+		const userMessageText = message || "Find recipes with my ingredients";
+
+		// Add user message to chat
+		setChatMessages((prev) => [
+			...prev,
+			{
+				id: `user-${Date.now()}`,
+				text: userMessageText,
+				isBot: false,
+				timestamp: new Date(),
+			},
+		]);
+
+		// Clear message input
+		setMessage("");
+
+		// Set loading state and add loading message
+		setIsLoadingApi(true);
+		const loadingMessageId = `loading-${Date.now()}`;
+		setChatMessages((prev) => [
+			...prev,
+			{
+				id: loadingMessageId,
+				text: "", // Empty text, will show loading animation
+				isBot: true,
+				timestamp: new Date(),
+			},
+		]);
+
 		// Prepare request data
 		const requestData = {
 			available_ingredients: imageUpload.detectedIngredients,
 			available_utensils: selectedUtensils,
-			preference: message || "any",
+			preference: userMessageText,
 			budget: budget || 5.0,
 		};
 
@@ -115,35 +146,59 @@ export default function Chat() {
 				});
 			}
 
-			// Add recipe response to chat
-			if (data.Title && data.recipes) {
-				const recipeText = `${data.Title}\n\n${data.recipes
-					.map(
-						(recipe: any, index: number) =>
-							`${index + 1}. ${recipe.name}\n   ⏱️ ${
-								recipe.cooking_time
-							} | 🌱 Carbon Score: ${recipe.carbon_score.toFixed(
-								2
-							)}\n   Ingredients: ${recipe.ingredients.join(
-								", "
-							)}`
-					)
-					.join("\n\n")}`;
+			// Remove loading message and add recipe response to chat
+			setChatMessages((prev) => {
+				const filtered = prev.filter(
+					(msg) => msg.id !== loadingMessageId
+				);
+				if (data.Title && data.recipes) {
+					const recipeText = `${data.Title}\n\n${data.recipes
+						.map(
+							(recipe: any, index: number) =>
+								`${index + 1}. ${recipe.name}\n   ⏱️ ${
+									recipe.cooking_time
+								} | 🌱 Carbon Score: ${recipe.carbon_score.toFixed(
+									2
+								)}\n   Ingredients: ${recipe.ingredients.join(
+									", "
+								)}`
+						)
+						.join("\n\n")}`;
 
-				setChatMessages((prev) => [
-					...prev,
-					{
-						id: `recipe-${Date.now()}`,
-						text: recipeText,
-						isBot: true,
-						timestamp: new Date(),
-					},
-				]);
-			}
+					return [
+						...filtered,
+						{
+							id: `recipe-${Date.now()}`,
+							text: recipeText,
+							isBot: true,
+							timestamp: new Date(),
+						},
+					];
+				}
+				return filtered;
+			});
 		} catch (error) {
 			console.error("=== Error Making API Call ===");
 			console.error("Error:", error);
 			handleSpeak("Error sending request");
+
+			// Remove loading message and add error message
+			setChatMessages((prev) => {
+				const filtered = prev.filter(
+					(msg) => msg.id !== loadingMessageId
+				);
+				return [
+					...filtered,
+					{
+						id: `error-${Date.now()}`,
+						text: "Sorry, I encountered an error while fetching recipes. Please try again.",
+						isBot: true,
+						timestamp: new Date(),
+					},
+				];
+			});
+		} finally {
+			setIsLoadingApi(false);
 		}
 	};
 
@@ -154,7 +209,7 @@ export default function Chat() {
 	return (
 		<div className="flex h-screen items-center justify-center font-sans bg-gradient-to-r from-green-50 via-emerald-50 to-teal-50">
 			<main className="flex h-screen w-full max-w-7xl flex-col items-center justify-between py-10 px-6 bg-gradient-to-r from-green-50 via-emerald-50 to-teal-50">
-				<div className="flex flex-col min-h-[75vh] w-full p-4 rounded-lg shadow-sm border border-gray-300 bg-white overflow-y-auto">
+				<div className="flex flex-col h-[75vh] w-full p-4 rounded-lg shadow-sm border border-gray-300 bg-white overflow-y-auto">
 					<div className="flex flex-col gap-4 w-full pt-2">
 						{isLoadingWelcome ? (
 							<div className="flex items-start gap-2 animate-slide-in-left">
@@ -176,28 +231,60 @@ export default function Chat() {
 								</div>
 							</div>
 						) : (
-							chatMessages.map((msg) => (
-								<div
-									key={msg.id}
-									className={`flex items-start gap-2 animate-slide-in-left ${
-										msg.isBot
-											? "justify-start"
-											: "justify-end"
-									}`}
-								>
+							chatMessages.map((msg) => {
+								// Show loading animation for empty bot messages (loading state)
+								const isLoadingMessage =
+									msg.isBot && msg.text === "";
+
+								return (
 									<div
-										className={`rounded-2xl px-4 py-3 max-w-[80%] shadow-sm ${
+										key={msg.id}
+										className={`flex items-start gap-2 animate-slide-in-left ${
 											msg.isBot
-												? "bg-gray-200 rounded-tl-sm text-gray-800"
-												: "bg-green-600 rounded-tr-sm text-white"
+												? "justify-start"
+												: "justify-end"
 										}`}
 									>
-										<p className="whitespace-pre-wrap text-sm leading-relaxed">
-											{msg.text}
-										</p>
+										<div
+											className={`rounded-2xl px-4 py-3 max-w-[80%] shadow-sm ${
+												msg.isBot
+													? "bg-gray-200 rounded-tl-sm text-gray-800"
+													: "bg-green-600 rounded-tr-sm text-white"
+											}`}
+										>
+											{isLoadingMessage ? (
+												<div className="flex gap-1">
+													<div
+														className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+														style={{
+															animationDelay:
+																"0ms",
+														}}
+													></div>
+													<div
+														className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+														style={{
+															animationDelay:
+																"150ms",
+														}}
+													></div>
+													<div
+														className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+														style={{
+															animationDelay:
+																"300ms",
+														}}
+													></div>
+												</div>
+											) : (
+												<p className="whitespace-pre-wrap text-sm leading-relaxed">
+													{msg.text}
+												</p>
+											)}
+										</div>
 									</div>
-								</div>
-							))
+								);
+							})
 						)}
 						<div ref={chatEndRef} />
 					</div>
@@ -211,6 +298,7 @@ export default function Chat() {
 					isInputVisible={isInputVisible}
 					message={message}
 					onMessageChange={setMessage}
+					isDisabled={isLoadingApi}
 				/>
 			</main>
 
